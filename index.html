@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff8f5">
   <title>A Birthday Surprise ♡</title>
 
   <style>
@@ -21,6 +22,7 @@
     body {
       margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
       display: grid;
       place-items: center;
       overflow-x: hidden;
@@ -31,6 +33,10 @@
         radial-gradient(ellipse at 90% 82%, #ffe9d9 0, transparent 32%),
         #fff8f5;
       font-family: Georgia, "Times New Roman", serif;
+    }
+
+    button {
+      font: inherit;
     }
 
     .scene {
@@ -49,25 +55,27 @@
       letter-spacing: .04em;
     }
 
-    /* FRONT COVER */
+    /* =========================
+       FRONT COVER
+       ========================= */
+
     .cover-wrap {
       position: relative;
       width: min(76vw, 470px);
-      max-height: calc(100vh - 110px);
       aspect-ratio: 1000 / 1409;
       border-radius: 3px 9px 9px 3px;
-      box-shadow: 0 18px 45px #8e52602b,
-                  0 3px 9px #8e52601c;
+      box-shadow:
+        0 18px 45px #8e52602b,
+        0 3px 9px #8e52601c;
       transform-origin: left center;
       transition:
         opacity .55s ease,
-        transform .75s cubic-bezier(.2,.75,.2,1);
+        transform .75s cubic-bezier(.2, .75, .2, 1);
       overflow: hidden;
       background: white;
     }
 
-    .cover-wrap img,
-    .page img {
+    .cover-wrap > img {
       display: block;
       width: 100%;
       height: 100%;
@@ -83,7 +91,8 @@
       pointer-events: none;
     }
 
-    /* Invisible button positioned over the cover button */
+    /* Invisible clickable area over the printed button */
+
     .open-button {
       position: absolute;
       left: 17.3%;
@@ -95,6 +104,18 @@
       background: transparent;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      animation: openHintPulse 2s ease-in-out infinite;
+    }
+
+    .open-button::after {
+      content: "✦";
+      position: absolute;
+      right: 5%;
+      top: 10%;
+      color: #d94f7b;
+      font-size: clamp(14px, 2vw, 22px);
+      animation: sparkle 1.5s ease-in-out infinite;
+      pointer-events: none;
     }
 
     .open-button:focus-visible,
@@ -103,7 +124,39 @@
       outline-offset: 3px;
     }
 
-    /* OPEN BOOK */
+    @keyframes openHintPulse {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 0 0 #ef7c9d00;
+      }
+
+      50% {
+        transform: translateY(-3px) scale(1.025);
+        box-shadow: 0 0 0 7px #ef7c9d30;
+      }
+    }
+
+    @keyframes sparkle {
+      0%, 100% {
+        opacity: .35;
+        transform: scale(.8) rotate(0deg);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.3) rotate(25deg);
+      }
+    }
+
+    .cover-wrap.opening .open-button,
+    .cover-wrap.opening .open-button::after {
+      animation: none;
+    }
+
+    /* =========================
+       OPEN BOOK
+       ========================= */
+
     .book {
       display: none;
       width: min(96vw, 1000px);
@@ -125,7 +178,8 @@
       transform-style: preserve-3d;
     }
 
-    /* Book spine */
+    /* Realistic-looking center spine */
+
     .spread::after {
       content: "";
       position: absolute;
@@ -160,11 +214,24 @@
       border-radius: 0 4px 4px 0;
     }
 
-    .page img {
+    .page > img {
+      display: block;
+      width: 100%;
+      height: 100%;
       object-fit: fill;
     }
 
-    /* CLICKABLE GIFT BOX */
+    @keyframes bookIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* =========================
+       ANIMATED GIFT BOX
+       ========================= */
+
     .gift-button {
       position: absolute;
       z-index: 4;
@@ -177,41 +244,108 @@
       border-radius: 12px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+
+      /* Gentle bounce to indicate interactivity */
+      animation: giftBounce 1.8s ease-in-out infinite;
     }
+
+    /* Expanding glowing ring */
+
+    .gift-button::before {
+      content: "";
+      position: absolute;
+      inset: 8%;
+      border: 2px solid #ed6b98;
+      border-radius: 18px;
+      box-shadow: 0 0 12px #ed6b9866;
+      animation: giftGlow 1.8s ease-out infinite;
+      pointer-events: none;
+    }
+
+    /* Floating music icon */
 
     .gift-button::after {
       content: "♫";
       position: absolute;
       right: 3%;
       bottom: 1%;
-      width: clamp(22px, 3.4vw, 38px);
-      height: clamp(22px, 3.4vw, 38px);
+      width: clamp(25px, 3.5vw, 40px);
+      height: clamp(25px, 3.5vw, 40px);
       display: grid;
       place-items: center;
       border-radius: 50%;
       color: white;
-      background: #e75d89e8;
-      box-shadow: 0 3px 10px #8e526044;
+      background: #e75d89;
+      box-shadow: 0 3px 12px #8e526044;
       font: 20px/1 Arial, sans-serif;
-      opacity: 0;
-      transition: opacity .2s;
+      opacity: 1;
+      animation: musicFloat 1.4s ease-in-out infinite;
+      pointer-events: none;
     }
 
-    .gift-button:hover::after,
-    .gift-button:focus-visible::after,
-    .gift-button.playing::after {
-      opacity: 1;
+    @keyframes giftBounce {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+
+      45% {
+        transform: translateY(-5px) scale(1.035);
+      }
+
+      65% {
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes giftGlow {
+      0% {
+        transform: scale(.88);
+        opacity: .85;
+      }
+
+      100% {
+        transform: scale(1.18);
+        opacity: 0;
+      }
+    }
+
+    @keyframes musicFloat {
+      0%, 100% {
+        transform: translateY(0) rotate(-8deg);
+      }
+
+      50% {
+        transform: translateY(-6px) rotate(8deg);
+      }
+    }
+
+    /* Stop the bouncing while the song plays */
+
+    .gift-button.playing {
+      animation: none;
+    }
+
+    .gift-button.playing::before {
+      animation: none;
+      opacity: .4;
     }
 
     .gift-button.playing::after {
       content: "Ⅱ";
+      animation: none;
+      opacity: 1;
     }
 
+    /* =========================
+       MUSIC STATUS AND CONTROLS
+       ========================= */
+
     .music-note {
-      font: 13px/1.4 Arial, sans-serif;
+      font: 13px/1.5 Arial, sans-serif;
       color: #a35d73;
       text-align: center;
-      min-height: 18px;
+      min-height: 20px;
+      max-width: 90vw;
     }
 
     .restart {
@@ -223,6 +357,7 @@
       padding: 10px 18px;
       cursor: pointer;
       font-size: 14px;
+      transition: background .2s ease;
     }
 
     .restart.show {
@@ -233,21 +368,17 @@
       background: #fff0f4;
     }
 
-    @keyframes bookIn {
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
+    /* =========================
+       RESPONSIVE DESIGN
+       ========================= */
 
-    /* MOBILE FRIENDLY */
     @media (max-width: 560px) {
       body {
         padding: 16px 4px;
       }
 
       .cover-wrap {
-        width: min(88vw, calc((100vh - 105px) * .7097));
+        width: min(88vw, calc((100dvh - 105px) * .7097));
       }
 
       .book {
@@ -259,16 +390,20 @@
       }
 
       .gift-button::after {
-        opacity: .85;
+        opacity: .95;
       }
     }
+
+    /* Accessibility: disable motion if requested by the device */
 
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
       *::after {
         animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
         transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
       }
     }
   </style>
@@ -282,51 +417,71 @@
     </p>
 
     <!-- FRONT COVER -->
-    <section class="cover-wrap" id="cover"
-             aria-label="Birthday card cover">
 
-      <img src="cover.jpg"
-           alt="Birthday cake cover with the words Happy Birthday">
+    <section
+      class="cover-wrap"
+      id="cover"
+      aria-label="Birthday card cover"
+    >
+      <img
+        src="cover.jpg"
+        alt="Birthday cake cover with the words Happy Birthday"
+      >
 
-      <button class="open-button"
-              id="openBook"
-              aria-label="Open with happiness">
-      </button>
-
+      <button
+        class="open-button"
+        id="openBook"
+        aria-label="Open with happiness"
+        title="Click to open your birthday card"
+      ></button>
     </section>
 
-    <!-- OPEN BOOK: PHOTOS ON LEFT, MESSAGE ON RIGHT -->
-    <section class="book" id="book" aria-label="Open birthday book">
+    <!-- OPEN BOOK -->
 
+    <section
+      class="book"
+      id="book"
+      aria-label="Open birthday book"
+    >
       <div class="spread">
 
         <!-- LEFT PAGE: PHOTOS AND GIFT -->
+
         <div class="page left-page">
 
-          <img src="photos.jpg"
-               alt="Birthday memories, photos, balloons and a gift box">
+          <img
+            src="photos.jpg"
+            alt="Birthday memories, photos, balloons and a gift box"
+          >
 
-          <button class="gift-button"
-                  id="giftButton"
-                  aria-label="Click the gift box to play the birthday song"
-                  title="Click the gift to play the song">
-          </button>
+          <button
+            class="gift-button"
+            id="giftButton"
+            aria-label="Play or pause the birthday song"
+            title="Click the gift box to play the song"
+          ></button>
 
         </div>
 
         <!-- RIGHT PAGE: BIRTHDAY MESSAGE -->
+
         <div class="page right-page">
 
-          <img src="message.jpg"
-               alt="A heartfelt birthday message decorated with pink hearts">
+          <img
+            src="message.jpg"
+            alt="A heartfelt birthday message decorated with pink hearts"
+          >
 
         </div>
 
       </div>
-
     </section>
 
-    <div class="music-note" id="musicNote" aria-live="polite">
+    <div
+      class="music-note"
+      id="musicNote"
+      aria-live="polite"
+    >
       Tap the gift box on the photo page for your song ♫
     </div>
 
@@ -334,12 +489,14 @@
       Close the book ↶
     </button>
 
-    <!-- YOUR SONG -->
-    <audio id="birthdaySong"
-           src="song.mpeg"
-           preload="auto"
-           loop>
-    </audio>
+    <!-- YOUR UPLOADED SONG -->
+
+    <audio
+      id="birthdaySong"
+      src="song.mpeg"
+      preload="auto"
+      loop
+    ></audio>
 
   </main>
 
@@ -353,32 +510,31 @@
     const musicNote = document.getElementById("musicNote");
     const hint = document.getElementById("hint");
 
-    // OPEN THE BIRTHDAY BOOK
-    openButton.addEventListener("click", () => {
+    let opening = false;
 
+    /* OPEN THE BIRTHDAY BOOK */
+
+    openButton.addEventListener("click", () => {
+      if (opening) return;
+
+      opening = true;
       cover.classList.add("opening");
 
       hint.textContent = "A book full of memories ♡";
 
       window.setTimeout(() => {
-
         cover.style.display = "none";
-
         book.classList.add("show");
-
         restart.classList.add("show");
-
+        opening = false;
       }, 560);
-
     });
 
-    // PLAY OR PAUSE THE SONG WHEN THE GIFT IS CLICKED
+    /* PLAY OR PAUSE THE SONG WHEN THE GIFT IS CLICKED */
+
     giftButton.addEventListener("click", async () => {
-
       if (song.paused) {
-
         try {
-
           await song.play();
 
           giftButton.classList.add("playing");
@@ -387,36 +543,43 @@
             "Your song is playing ♡ Tap the gift again to pause.";
 
         } catch (error) {
-
           musicNote.textContent =
-            "Could not play the song. Check that song.mpeg is uploaded with index.html.";
-
+            "The song could not play. Check that song.mpeg is uploaded with index.html.";
         }
-
       } else {
-
         song.pause();
 
         giftButton.classList.remove("playing");
 
         musicNote.textContent =
           "Song paused ♡ Tap the gift to play again.";
-
       }
-
     });
 
-    // CLOSE THE BOOK AND RETURN TO THE COVER
+    /* KEEP THE GIFT ICON IN SYNC WITH AUDIO PLAYBACK */
+
+    song.addEventListener("play", () => {
+      giftButton.classList.add("playing");
+    });
+
+    song.addEventListener("pause", () => {
+      giftButton.classList.remove("playing");
+    });
+
+    song.addEventListener("error", () => {
+      musicNote.textContent =
+        "Song file not found. Check the filename and upload song.mpeg.";
+    });
+
+    /* CLOSE THE BOOK AND RETURN TO THE COVER */
+
     restart.addEventListener("click", () => {
-
       song.pause();
-
       song.currentTime = 0;
 
       giftButton.classList.remove("playing");
 
       book.classList.remove("show");
-
       restart.classList.remove("show");
 
       cover.style.display = "block";
@@ -430,9 +593,9 @@
 
       musicNote.textContent =
         "Tap the gift box on the photo page for your song ♫";
-
     });
   </script>
 
 </body>
 </html>
+

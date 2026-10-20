@@ -56,7 +56,7 @@
     }
 
     /* =========================
-       FRONT COVER
+       PAGE 1: FRONT COVER
        ========================= */
 
     .cover-wrap {
@@ -69,7 +69,7 @@
         0 3px 9px #8e52601c;
       transform-origin: left center;
       transition:
-        opacity .55s ease,
+        opacity .65s ease,
         transform .75s cubic-bezier(.2, .75, .2, 1);
       overflow: hidden;
       background: white;
@@ -91,7 +91,7 @@
       pointer-events: none;
     }
 
-    /* Invisible clickable area over the printed button */
+    /* Clickable area over "Open with Happiness" */
 
     .open-button {
       position: absolute;
@@ -119,7 +119,8 @@
     }
 
     .open-button:focus-visible,
-    .gift-button:focus-visible {
+    .gift-button:focus-visible,
+    .restart:focus-visible {
       outline: 3px solid #b93665;
       outline-offset: 3px;
     }
@@ -154,7 +155,7 @@
     }
 
     /* =========================
-       OPEN BOOK
+       OPEN BOOK: PAGES 2 AND 3
        ========================= */
 
     .book {
@@ -178,7 +179,7 @@
       transform-style: preserve-3d;
     }
 
-    /* Realistic-looking center spine */
+    /* Book spine */
 
     .spread::after {
       content: "";
@@ -229,7 +230,7 @@
     }
 
     /* =========================
-       ANIMATED GIFT BOX
+       PAGE 2: CLICKABLE GIFT BOX
        ========================= */
 
     .gift-button {
@@ -244,12 +245,10 @@
       border-radius: 12px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-
-      /* Gentle bounce to indicate interactivity */
       animation: giftBounce 1.8s ease-in-out infinite;
     }
 
-    /* Expanding glowing ring */
+    /* Glowing ring */
 
     .gift-button::before {
       content: "";
@@ -262,7 +261,7 @@
       pointer-events: none;
     }
 
-    /* Floating music icon */
+    /* Floating music symbol */
 
     .gift-button::after {
       content: "♫";
@@ -319,7 +318,7 @@
       }
     }
 
-    /* Stop the bouncing while the song plays */
+    /* Stop gift bouncing while music plays */
 
     .gift-button.playing {
       animation: none;
@@ -394,7 +393,7 @@
       }
     }
 
-    /* Accessibility: disable motion if requested by the device */
+    /* Accessibility */
 
     @media (prefers-reduced-motion: reduce) {
       *,
@@ -416,7 +415,7 @@
       A little birthday surprise, made just for you ♡
     </p>
 
-    <!-- FRONT COVER -->
+    <!-- PAGE 1: BIRTHDAY COVER -->
 
     <section
       class="cover-wrap"
@@ -445,13 +444,13 @@
     >
       <div class="spread">
 
-        <!-- LEFT PAGE: PHOTOS AND GIFT -->
+        <!-- PAGE 2: PHOTOS AND GIFT BOX -->
 
         <div class="page left-page">
 
           <img
             src="photos.jpg"
-            alt="Birthday memories, photos, balloons and a gift box"
+            alt="Birthday photos, balloons and a gift box"
           >
 
           <button
@@ -463,13 +462,13 @@
 
         </div>
 
-        <!-- RIGHT PAGE: BIRTHDAY MESSAGE -->
+        <!-- PAGE 3: UPDATED BIRTHDAY MESSAGE -->
 
         <div class="page right-page">
 
           <img
             src="message.jpg"
-            alt="A heartfelt birthday message decorated with pink hearts"
+            alt="Birthday message beginning with Hey J, wishing a happy 21st birthday, signed With love, Arya"
           >
 
         </div>
@@ -489,7 +488,7 @@
       Close the book ↶
     </button>
 
-    <!-- YOUR UPLOADED SONG -->
+    <!-- SONG FILE: KEEP IN THE SAME FOLDER -->
 
     <audio
       id="birthdaySong"
@@ -512,25 +511,29 @@
 
     let opening = false;
 
-    /* OPEN THE BIRTHDAY BOOK */
+    /* OPEN THE COVER */
 
     openButton.addEventListener("click", () => {
       if (opening) return;
 
       opening = true;
+
       cover.classList.add("opening");
 
       hint.textContent = "A book full of memories ♡";
 
       window.setTimeout(() => {
         cover.style.display = "none";
+
         book.classList.add("show");
+
         restart.classList.add("show");
+
         opening = false;
       }, 560);
     });
 
-    /* PLAY OR PAUSE THE SONG WHEN THE GIFT IS CLICKED */
+    /* PLAY OR PAUSE MUSIC USING THE GIFT BOX */
 
     giftButton.addEventListener("click", async () => {
       if (song.paused) {
@@ -556,10 +559,13 @@
       }
     });
 
-    /* KEEP THE GIFT ICON IN SYNC WITH AUDIO PLAYBACK */
+    /* KEEP THE GIFT ANIMATION IN SYNC WITH THE SONG */
 
     song.addEventListener("play", () => {
       giftButton.classList.add("playing");
+
+      musicNote.textContent =
+        "Your song is playing ♡ Tap the gift again to pause.";
     });
 
     song.addEventListener("pause", () => {
@@ -580,6 +586,7 @@
       giftButton.classList.remove("playing");
 
       book.classList.remove("show");
+
       restart.classList.remove("show");
 
       cover.style.display = "block";
@@ -598,4 +605,5 @@
 
 </body>
 </html>
+
 
